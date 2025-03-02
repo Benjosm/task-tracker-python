@@ -9,8 +9,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Send pull request number to endpoint
-      run: |
-        curl -X POST -H "Content-Type: application/json" -d '{"pull_request_number": ${{ github.event.pull_request.number }}}' https://e5be-23-112-11-217.ngrok-free.app/review_build_error_logs
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Send pull request number to endpoint
+        run: |
+          python -c "import requests
+import json
+pull_request_number = ${{ github.event.pull_request.number }}
+url = \"https:/e5be-23-112-11-217.ngrok-free.app/review_build_error_logs\" # Changed to review_build_error_logs endpoint
+payload = json.dumps({\"pull_request_number\": pull_request_number})
+headers = {\"Content-Type\": \"application/json\"}
+response = requests.post(url, headers=headers, data=payload)
+print(response.text)"
+      - name: Run tests
+        run: pytest
