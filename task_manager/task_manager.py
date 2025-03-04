@@ -7,8 +7,8 @@ on tasks such as adding, listing, and marking tasks as complete.
 import datetime
 import json
 import os
-from task import Task
-from task_storage import TaskStorage
+from .task import Task
+from .task_storage import TaskStorage
 
 
 class TaskManager:
@@ -117,18 +117,16 @@ class TaskManager:
         Returns:
             dict: Dictionary with task statistics
         """
-        total = len(self.tasks)
-        completed = sum(1 for task in self.tasks if task.completed)
-        pending = total - completed
-        
-        priorities = {"low": 0, "medium": 0, "high": 0}
+        total_tasks = len(self.tasks)
+        completed_tasks = sum(1 for task in self.tasks if task.completed)
+        pending_tasks = total_tasks - completed_tasks
+        priority_counts = {"low": 0, "medium": 0, "high": 0}
         for task in self.tasks:
-            if task.priority in priorities:
-                priorities[task.priority] += 1
-        
+            if task.priority in priority_counts:
+                priority_counts[task.priority] += 1
         return {
-            "total": total,
-            "completed": completed,
-            "pending": pending,
-            "priorities": priorities
+            "total": total_tasks,
+            "completed": completed_tasks,
+            "pending": pending_tasks,
+            "priorities": priority_counts
         }
