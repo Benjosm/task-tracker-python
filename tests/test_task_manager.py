@@ -1,7 +1,8 @@
 import sys
+import os
+print(f"Current working directory: {os.getcwd()}")
 sys.path.insert(0, '.') # Add project root to python path
 from task_manager.task_manager import TaskManager
-import os
 
 def test_add_task():
     task_manager = TaskManager('test_tasks.json') # Use a separate test json file
@@ -27,11 +28,11 @@ def test_add_task_no_description():
 
 def test_add_task_with_status():
     task_manager = TaskManager('test_tasks.json') # Use a separate test json file
-    task = task_manager.add_task('Test Task', 'Test Description', 'Pending')
+    task = task_manager.add_task('Test Task', 'Test Description', '2024-03-10')
     assert task is not None
     assert task.title == 'Test Task'
     assert task.description == 'Test Description'
-    assert task.status == 'Pending'
+    assert task.due_date.strftime('%Y-%m-%d') == '2024-03-10'
 
     # Clean up test file
     if os.path.exists('test_tasks.json'):
