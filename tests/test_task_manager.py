@@ -1,7 +1,8 @@
 import sys
 import os
 print(f"Current working directory: {os.getcwd()}")
-sys.path.insert(0, '.') # Add project root to python path
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, PROJECT_ROOT) # Add project root to python path
 from task_manager.task_manager import TaskManager
 
 def test_add_task():
@@ -32,7 +33,7 @@ def test_add_task_with_status():
         task = task_manager.add_task('Test Task', 'Test Description', '2024/03/10')
     except ValueError:
         return
-    assert False, "ValueError was not raised for invalid date format"\
+    assert False, "ValueError was not raised for invalid date format"
 
     # Clean up test file
     if os.path.exists('test_tasks.json'):
@@ -74,3 +75,36 @@ def test_get_task():
     # Clean up test file
     if os.path.exists('test_tasks.json'):
         os.remove('test_tasks.json')
+
+def test_task_persistence():
+    task_manager = TaskManager('test_tasks.json') # Use a separate test json file
+    task = task_manager.add_task('Persistent Task', 'Task to be persisted')
+    task_id_to_check = task.id
+
+    # Create a new TaskManager instance to simulate loading from file
+    task_manager_loaded = TaskManager('test_tasks.json')
+    loaded_task = task_manager_loaded.get_task(task_id_to_check)
+
+    assert loaded_task is not None # Expecting task to be loaded now
+    assert loaded_task.id == task_id_to_check
+    assert loaded_task.title == 'Persistent Task'
+    assert loaded_task.description == 'Task to be persisted'
+
+    # Clean up test file
+    if os.path.exists('test_tasks.json'):
+        os.remove('test_tasks.json')
+
+def test_add_task_with_priority():
+    task_manager = TaskManager('test_tasks.json') # Use a separate test json file
+    task = task_manager.add_task('Priority Task', 'Description for priority task', priority='High')
+    assert task is not None
+    assert task.title == 'Priority Task'
+    assert task.description == 'Description for priority task'
+    assert task.priority == 'High'
+
+    # Clean up test file
+    if os.path.exists('test_tasks.json'):
+        os.remove('test_tasks.json')
+
+def test_failing_test():
+    assert False
