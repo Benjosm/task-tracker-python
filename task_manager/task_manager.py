@@ -7,7 +7,7 @@ on tasks such as adding, listing, and marking tasks as complete.
 import datetime
 import json
 import os
-from task import Task
+from .task import Task  # Relative import
 from task_storage import TaskStorage
 
 
@@ -23,7 +23,7 @@ class TaskManager:
         self.storage = TaskStorage(storage_path)
         self.tasks = self.storage.load_tasks()
 
-    def add_task(self, title, description="", due_date=None, priority="medium"):
+    def add_task(self, title, description="", due_date=None, priority="medium"): 
         """Add a new task to the task list.
 
         Args:
@@ -132,3 +132,4 @@ class TaskManager:
             "pending": pending,
             "priorities": priorities
         }
+"
