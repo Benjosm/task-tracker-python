@@ -1,6 +1,6 @@
 import sys
 import os
-print(f\"Current working directory: {os.getcwd()}\")
+print(f"Current working directory: {os.getcwd()}")
 sys.path.insert(0, '.') # Add project root to python path
 from task_manager.task_manager import TaskManager
 
@@ -32,7 +32,8 @@ def test_add_task_with_status():
         task = task_manager.add_task('Test Task', 'Test Description', '2024/03/10')
     except ValueError:
         return
-    assert False, \"ValueError was not raised for invalid date format\"\n
+    assert False, "ValueError was not raised for invalid date format"\
+
     # Clean up test file
     if os.path.exists('test_tasks.json'):
         os.remove('test_tasks.json')
@@ -56,6 +57,19 @@ def test_delete_task():
     task_manager.delete_task(task_id_to_delete)
     deleted_task = task_manager.get_task(task_id_to_delete)
     assert deleted_task is None
+
+    # Clean up test file
+    if os.path.exists('test_tasks.json'):
+        os.remove('test_tasks.json')
+
+def test_get_task():
+    task_manager = TaskManager('test_tasks.json') # Use a separate test json file
+    task = task_manager.add_task('Task to Get', 'Description for get task')
+    retrieved_task = task_manager.get_task(task.id)
+    assert retrieved_task is not None
+    assert retrieved_task.id == task.id
+    assert retrieved_task.title == 'Task to Get'
+    assert retrieved_task.description == 'Description for get task'
 
     # Clean up test file
     if os.path.exists('test_tasks.json'):
