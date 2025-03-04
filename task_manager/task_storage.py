@@ -8,40 +8,34 @@ import os
 from .task import Task
 
 
+class TaskEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Task):
+            return obj.to_dict()
+        return super().default(obj)
+
+
 class TaskStorage:
     """Handles persistence of tasks to and from storage."""
 
-    def __init__(self, storage_path):
-        """Initialize the storage with a file path.
-
-        Args:
-            storage_path (str): Path to the task storage file
-        """
+    def __init__(self, storage_path="tasks.json"):
+        """Initialize TaskStorage with a path to the storage file."""
         self.storage_path = storage_path
 
     def save_tasks(self, tasks):
-        """Save the tasks to the storage file.
-
-        Args:
-            tasks (list): List of Task objects to save
-        """
-        tasks_data = [task.to_dict() for task in tasks]
-        with open(self.storage_path, 'w') as file:
-            json.dump(tasks_data, file, indent=2)
+        """Save tasks to the storage file."""
+        os.makedirs(os.path.dirname(self.storage_path), exist_ok=True)  # Ensure directory exists
+        with open(self.storage_path, 'w') as f:
+            json.dump(tasks, f, indent=4, cls=TaskEncoder)
 
     def load_tasks(self):
-        """Load tasks from the storage file.
-
-        Returns:
-            list: List of Task objects
-        """
+        """Load tasks from the storage file."""
         if not os.path.exists(self.storage_path):
-            return []
-        
+            return []  # Return empty list if file doesn't exist
         try:
-            with open(self.storage_path, 'r') as file:
-                tasks_data = json.load(file)
-                return [Task.from_dict(task_data) for task_data in tasks_data]
-        except (json.JSONDecodeError, FileNotFoundError):
-            # If file is empty or corrupted, return empty list
-            return []
+            with open(self.storage_path, 'r') as f:
+                task_data_list = json.load(f)
+                tasks = [Task.from_dict(task_data) for task_data in task_data_list]
+                return tasks
+        except json.JSONDecodeError:
+            return []  # Return empty list if JSON is invalid
