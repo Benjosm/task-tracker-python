@@ -45,3 +45,19 @@ def test_delete_non_existent_task():
     manager.delete_task("non_existent_id")
     # No assertion needed, just check if it runs without errors
     assert True
+
+
+def test_update_task():
+    manager = TaskManager()
+    task = manager.add_task("Task to update", "Description to update")
+    task_id = task.id
+    updated_task = manager.update_task(task_id, "Updated Task Title", "Updated Task Description")
+    assert updated_task is not None
+    assert updated_task.id == task_id
+    assert updated_task.title == "Updated Task Title"
+    assert updated_task.description == "Updated Task Description"
+
+    retrieved_task = manager.get_task_by_id(task_id)
+    assert retrieved_task is not None
+    assert retrieved_task.title == "Updated Task Title"
+    assert retrieved_task.description == "Updated Task Description"
