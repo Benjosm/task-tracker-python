@@ -15,14 +15,15 @@ vi.mock('jira-client', () => {
 });
 
 import JiraClient from 'jira-client';
-import { createJiraIssue } from 'src/jira_functions/createIssue.ts';
+import { createJiraIssue } from 'src/jira_functions/createIssue';
+
 
 describe('createJiraIssue', () => {
 
   it('should create an issue successfully with valid fields', async () => {
     // Arrange
     const params = {
-      jiraBaseUrl: 'example.atlassian.net/', // trailing slash will be normalized
+      jiraBaseUrl: 'https://example.atlassian.net/', // trailing slash will be normalized
       username: 'user@example.com',
       password: 'apiToken',
       fields: {
@@ -65,7 +66,7 @@ describe('createJiraIssue', () => {
   it('should throw an error if project.key is missing', async () => {
     // Arrange: Missing project.key in the fields.
     const params = {
-      jiraBaseUrl: 'example.atlassian.net',
+      jiraBaseUrl: 'https://example.atlassian.net',
       username: 'user@example.com',
       password: 'apiToken',
       fields: {
@@ -82,7 +83,7 @@ describe('createJiraIssue', () => {
   it('should throw an error if issuetype (name or id) is missing', async () => {
     // Arrange: Missing issuetype name and id.
     const params = {
-      jiraBaseUrl: 'example.atlassian.net',
+      jiraBaseUrl: 'https://example.atlassian.net',
       username: 'user@example.com',
       password: 'apiToken',
       fields: {
@@ -99,7 +100,7 @@ describe('createJiraIssue', () => {
   it('should throw an error if summary is missing', async () => {
     // Arrange: Missing summary in the fields.
     const params = {
-      jiraBaseUrl: 'example.atlassian.net',
+      jiraBaseUrl: 'https://example.atlassian.net',
       username: 'user@example.com',
       password: 'apiToken',
       fields: {
@@ -116,7 +117,7 @@ describe('createJiraIssue', () => {
   it('should throw an error when addNewIssue fails', async () => {
     // Arrange
     const params = {
-      jiraBaseUrl: 'example.atlassian.net/',
+      jiraBaseUrl: 'https://example.atlassian.net/',
       username: 'user@example.com',
       password: 'apiToken',
       fields: {
@@ -131,13 +132,13 @@ describe('createJiraIssue', () => {
 
     // Act & Assert
     await expect(createJiraIssue(params)).rejects.toThrow(`Error creating Jira issue: ${error}`);
-    expect(addNewIssueMock).toHaveBeenCalledTimes(2);
+    expect(addNewIssueMock).toHaveBeenCalledTimes(1);
   });
 
   it('should create a Task issue in TM project with required fields', async () => {
     // Arrange
     const params = {
-      jiraBaseUrl: 'example.atlassian.net/',
+      jiraBaseUrl: 'https://example.atlassian.net/',
       username: 'user@example.com',
       password: 'apiToken',
       fields: {
@@ -157,7 +158,7 @@ describe('createJiraIssue', () => {
     expect(result).toEqual(fakeIssue);
 
     const mockedJiraClient = JiraClient as unknown as Mock;
-    expect(mockedJiraClient).toHaveBeenCalledTimes(2);
+    expect(mockedJiraClient).toHaveBeenCalledTimes(1);
     expect(mockedJiraClient).toHaveBeenCalledWith({
       protocol: 'https',
       host: 'example.atlassian.net',
@@ -167,7 +168,7 @@ describe('createJiraIssue', () => {
       strictSSL: false,
     });
 
-    expect(addNewIssueMock).toHaveBeenCalledTimes(3);
+    expect(addNewIssueMock).toHaveBeenCalledTimes(1);
     expect(addNewIssueMock).toHaveBeenCalledWith({ fields: params.fields });
   });
 
@@ -185,5 +186,22 @@ describe('createJiraIssue', () => {
 
     // Act & Assert
     await expect(createJiraIssue(params)).rejects.toThrow('jiraBaseUrl is required');
+  });
+
+  it('should throw an error if jiraBaseUrl is invalid format', async () => {
+    // Arrange: Invalid jiraBaseUrl format in the params.
+    const params = {
+      jiraBaseUrl: 'example.atlassian.net', // Missing protocol (http:// or https://)
+      username: 'user@example.com',
+      password: 'apiToken',
+      fields: {
+        project: { key: 'TEST' },
+        issuetype: { name: 'Story' },
+        summary: 'An example issue',
+      },
+    };
+
+    // Act & Assert
+    await expect(createJiraIssue(params)).rejects.toThrow('Invalid jiraBaseUrl format. It must start with http:// or https://');
   });
 });
