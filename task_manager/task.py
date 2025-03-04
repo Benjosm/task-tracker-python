@@ -11,14 +11,14 @@ import uuid
 class Task:
     """Represents a single task in the task management system."""
 
-    def __init__(self, title, description="", due_date=None, priority="medium"):
+    def __init__(self, title, description="", due_date=None, priority='medium'):
         """Initialize a new Task.
 
         Args:
             title (str): The title of the task
             description (str, optional): Description of the task. Defaults to "".
             due_date (datetime.date, optional): Due date of the task. Defaults to None.
-            priority (str, optional): Priority level (low, medium, high). Defaults to "medium".
+            priority (str, optional): Priority level (low, medium, high). Defaults to 'medium'.
         """
         self.id = str(uuid.uuid4())
         self.title = title
@@ -35,7 +35,7 @@ class Task:
         Returns:
             dict: Dictionary representation of the task
         """
-        return {
+        task_dict = {
             "id": self.id,
             "title": self.title,
             "description": self.description,
@@ -45,6 +45,7 @@ class Task:
             "completed": self.completed,
             "completed_date": self.completed_date.isoformat() if self.completed_date else None
         }
+        return task_dict
 
     @classmethod
     def from_dict(cls, data):
