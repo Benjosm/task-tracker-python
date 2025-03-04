@@ -1,7 +1,8 @@
 import sys
+import os
+print(f"Current working directory: {os.getcwd()}")
 sys.path.insert(0, '.') # Add project root to python path
 from task_manager.task_manager import TaskManager
-import os
 
 def test_add_task():
     task_manager = TaskManager('test_tasks.json') # Use a separate test json file

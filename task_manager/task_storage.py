@@ -5,7 +5,7 @@ Handles saving and loading tasks from a JSON file.
 """
 import json
 import os
-from task import Task
+from .task import Task
 
 
 class TaskStorage:
