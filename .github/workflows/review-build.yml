@@ -1,0 +1,20 @@
+name: Review Build Notify
+
+on:
+    pull_request:
+        types: [opened]
+        branches: [ main, develop ]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+        
+            - name: Call API endpoint regardless of build result
+              if: always()  # This ensures this step runs even if previous steps fail
+              run: |
+                echo "Calling API endpoint..."
+                curl -X POST -H 'Content-Type: application/json' -d '{"pull_request_number": "${{ github.event.pull_request.number }}"}' https:/3a00-23-112-11-217.ngrok-free.app/review_build_error_logs
+    
