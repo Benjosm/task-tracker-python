@@ -1,52 +1,27 @@
-"""
-Task storage module for the Task Manager application.
-
-Handles saving and loading tasks from a JSON file.
-"""
 import json
 import os
-from .task import Task
-
+import traceback
+from task_manager.task import Task
 
 class TaskStorage:
-    """Handles persistence of tasks to and from storage."""
-
-    def __init__(self, storage_path):
-        """Initialize the storage with a file path.
-
-        Args:
-            storage_path (str): Path to the task storage file
-        """
-        self.storage_path = storage_path
+    def __init__(self, file_path):
+        self.file_path = file_path
 
     def save_tasks(self, tasks):
-        """Save the tasks to the storage file.
-
-        Args:
-            tasks (list): List of Task objects to save
-        """
         tasks_data = [task.to_dict() for task in tasks]
-        with open(self.storage_path, 'w') as file:
-            json.dump(tasks_data, file, indent=2)
+        try:
+            os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
+            with open(self.file_path, 'w') as file:
+                json.dump(tasks_data, file, indent=2)
+        except Exception as e:
+            print(f"Error saving tasks: {e}")
 
     def load_tasks(self):
-        """Load tasks from the storage file.
-
-        Returns:
-            list: List of Task objects
-        """
-        if not os.path.exists(self.storage_path):
+        if not os.path.exists(self.file_path):
             return []
-        
         try:
-            with open(self.storage_path, 'r') as file:
+            with open(self.file_path, 'r') as file:
                 tasks_data = json.load(file)
-                return [Task.from_dict(task_data) for task_data in tasks_data]
-        except (json.JSONDecodeError, FileNotFoundError):
-            # If file is empty or corrupted, return empty list
+            return [Task.from_dict(task_data) for task_data in tasks_data]
+        except (FileNotFoundError, json.JSONDecodeError):
             return []
-
-    def clear_tasks(self):
-        """Clears all tasks from the storage file by overwriting it with an empty list."""
-        with open(self.storage_path, 'w') as file:
-            json.dump([], file)

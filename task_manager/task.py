@@ -1,3 +1,6 @@
+# task_manager/task.py
+
+
 """
 Task class module for the Task Manager application.
 
@@ -17,14 +20,15 @@ class TaskStatus(Enum):
 class Task:
     """Represents a single task in the task management system."""
 
-    def __init__(self, title, description="", due_date=None, priority="medium"): # Removed status for now
+    def __init__(self, title, description="", due_date=None, priority='medium', status=TaskStatus.PENDING):
         """Initialize a new Task.
 
         Args:
             title (str): The title of the task
             description (str, optional): Description of the task. Defaults to "".
             due_date (datetime.date, optional): Due date of the task. Defaults to None.
-            priority (str, optional): Priority level (low, medium, high). Defaults to "medium".
+            priority (str, optional): Priority level (low, medium, high). Defaults to 'medium'.
+            status (TaskStatus, optional): Status of the task. Defaults to TaskStatus.PENDING.
         """
         self.id = str(uuid.uuid4())
         self.title = title
@@ -32,7 +36,7 @@ class Task:
         self.due_date = due_date
         self.priority = priority
         self.created_date = datetime.date.today()
-        self.status = TaskStatus.PENDING # Default status is PENDING
+        self.status = status  # Use the provided status, or default to PENDING
         self.completed_date = None
 
     def to_dict(self):
@@ -46,9 +50,9 @@ class Task:
             "title": self.title,
             "description": self.description,
             "due_date": self.due_date.isoformat() if self.due_date else None,
-            "priority": self.priority,
+            "priority": str(self.priority.value) if isinstance(self.priority, TaskStatus) else str(self.priority) if isinstance(self.priority, Enum) else self.priority,
             "created_date": self.created_date.isoformat(),
-            "status": self.status.value, # Store status value
+            "status": str(self.status.value),
             "completed_date": self.completed_date.isoformat() if self.completed_date else None
         }
 
@@ -63,22 +67,22 @@ class Task:
             Task: A new Task object
         """
         task = cls(
-            title=data["title"],
+            title=data['title'],
             description=data.get("description", ""),
-            priority=data.get("priority", "medium")
+            priority=data.get("priority", "medium"),
+            status=TaskStatus(data.get('status', 'Pending')) # Load status from value, default to PENDING
         )
-        
-        task.id = data["id"]
-        
+
+        task.id = data['id']
+
         if data.get("due_date"):
             task.due_date = datetime.date.fromisoformat(data["due_date"])
-            
+
         task.created_date = datetime.date.fromisoformat(data["created_date"])
-        task.status = TaskStatus(data.get("status", 'Pending')) # Load status from value, default to PENDING
-        
+
         if data.get("completed_date"):
             task.completed_date = datetime.date.fromisoformat(data["completed_date"])
-            
+
         return task
 
     def __str__(self):
