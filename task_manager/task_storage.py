@@ -45,3 +45,8 @@ class TaskStorage:
         except (json.JSONDecodeError, FileNotFoundError):
             # If file is empty or corrupted, return empty list
             return []
+
+    def clear_tasks(self):
+        """Clears all tasks from the storage file by overwriting it with an empty list."""
+        with open(self.storage_path, 'w') as file:
+            json.dump([], file)
