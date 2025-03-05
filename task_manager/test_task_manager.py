@@ -17,6 +17,14 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(task.description, 'This is a test description')
         self.assertEqual(len(self.task_manager.tasks), 1)
 
+    def test_add_task_with_priority(self):
+        task = self.task_manager.add_task('Task with priority', 'This is a test description with priority', priority='high')
+        self.assertIsNotNone(task.id)
+        self.assertEqual(task.title, 'Task with priority')
+        self.assertEqual(task.description, 'This is a test description with priority')
+        self.assertEqual(task.priority, 'high')
+        self.assertEqual(len(self.task_manager.tasks), 1)
+
     def test_list_tasks(self):
         self.task_manager.add_task('Task 1', 'Description 1')
         self.task_manager.add_task('Task 2', 'Description 2')
