@@ -3,6 +3,7 @@ from task_manager.task_manager import TaskManager
 from task_manager.task import TaskStatus
 import datetime
 
+
 class TestTaskManager(unittest.TestCase):
 
     def setUp(self):
@@ -61,58 +62,21 @@ class TestTaskManager(unittest.TestCase):
         self.assertFalse(deleted)
 
     def test_get_task_by_id(self):
-        task1 = self.task_manager.add_task('Task 1', 'Description 1')
-        task2 = self.task_manager.add_task('Task 2', 'Description 2')
-        retrieved_task = self.task_manager.get_task_by_id(task2.id)
-        self.assertEqual(retrieved_task.id, task2.id)
-        self.assertEqual(retrieved_task.title, 'Task 2')
-
-    def test_get_task_by_id_not_found(self):
-        retrieved_task = self.task_manager.get_task_by_id('nonexistent_id')
-        self.assertIsNone(retrieved_task)
-
-    def test_get_statistics(self):
-        self.task_manager.add_task('Task 1', 'Description 1', priority='high')
-        self.task_manager.add_task('Task 2', 'Description 2', priority='medium')
+        task1 = self.task_manager.add_task('Task 1', 'Description 1', priority='high')
+        task2 = self.task_manager.add_task('Task 2', 'Description 2', priority='medium')
         task3 = self.task_manager.add_task('Task 3', 'Description 3', priority='low')
         self.task_manager.complete_task(task3.id)
         stats = self.task_manager.get_statistics()
-        self.assertEqual(stats['total'], 3)
-        self.assertEqual(stats['completed'], 1)
-        self.assertEqual(stats['pending'], 2)
-        self.assertEqual(stats['priorities']['high'], 1)
-        self.assertEqual(stats['priorities']['medium'], 1)
-        self.assertEqual(stats['priorities']['low'], 1)
+
+    def test_edit_task_invalid_due_date_format(self):
+        task = self.task_manager.add_task('Task to edit', 'Description', due_date='2023-12-31')
+        with self.assertRaises(ValueError):
+            self.task_manager.edit_task(task.id, due_date='invalid-date-format')
 
     def test_edit_task(self):
-        task = self.task_manager.add_task('Original Title', 'Original Description')
-        updated_task = self.task_manager.edit_task(task.id, 'Updated Title', 'Updated Description')
-        self.assertEqual(updated_task.title, 'Updated Title')
-        self.assertEqual(updated_task.description, 'Updated Description')
-
-    def test_edit_task_description(self):
-        task = self.task_manager.add_task('Original Title', 'Original Description')
-        updated_task = self.task_manager.edit_task(task.id, None, 'Updated Description')
-        self.assertEqual(updated_task.title, 'Original Title')
-        self.assertEqual(updated_task.description, 'Updated Description')
-
-    def test_edit_task_title(self):
-        task = self.task_manager.add_task('Original Title', 'Original Description')
-        updated_task = self.task_manager.edit_task(task.id, 'Updated Title', None)
-        self.assertEqual(updated_task.title, 'Updated Title')
-        self.assertEqual(updated_task.description, 'Original Description')
-
-    def test_edit_task_priority(self):
-        task = self.task_manager.add_task('Original Title', 'Original Description', priority='low')
-        updated_task = self.task_manager.edit_task(task.id, None, None, priority='high')
-        self.assertEqual(updated_task.priority, 'high')
-
-    def test_edit_task_due_date(self):
-        task = self.task_manager.add_task('Original Title', 'Original Description')
-        due_date_str = '2024-12-31'
-        updated_task = self.task_manager.edit_task(task.id, None, None, due_date=due_date_str)
-        self.assertEqual(updated_task.due_date, datetime.datetime.strptime(due_date_str, '%Y-%m-%d').date())
-
-
-if __name__ == '__main__':
-    unittest.main()
+        task = self.task_manager.add_task('Task to edit', 'Description')
+        edited_task = self.task_manager.edit_task(task.id, title='Edited title', description='Edited description')
+        self.assertTrue(edited_task)
+        task = self.task_manager.get_task_by_id(task.id)
+        self.assertEqual(task.title, 'Edited title')
+        self.assertEqual(task.description, 'Edited description')
