@@ -95,6 +95,12 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(updated_task.title, 'Original Title')
         self.assertEqual(updated_task.description, 'Updated Description')
 
+    def test_edit_task_title(self):
+        task = self.task_manager.add_task('Original Title', 'Original Description')
+        updated_task = self.task_manager.edit_task(task.id, 'Updated Title', None)
+        self.assertEqual(updated_task.title, 'Updated Title')
+        self.assertEqual(updated_task.description, 'Original Description')
+
 
 if __name__ == '__main__':
     unittest.main()
