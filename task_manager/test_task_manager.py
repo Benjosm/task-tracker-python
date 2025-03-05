@@ -112,7 +112,15 @@ class TestTaskManager(unittest.TestCase):
     def test_edit_task_due_date(self):
         task = self.task_manager.add_task('Task to edit', 'Description')
         due_date = datetime.date(2024, 1, 1)
-        edited_task = self.task_manager.edit_task(task.id, due_date=due_date)
+        edited_task = self.task_manager.edit_task(task.id, due_date=due_date.strftime('%Y-%m-%d'))
         self.assertTrue(edited_task)
         task = self.task_manager.get_task_by_id(task.id)
         self.assertEqual(task.due_date, due_date)
+
+    def test_add_task_empty_title(self):
+        with self.assertRaises(ValueError):
+            task = self.task_manager.add_task('', 'This is a test description with empty title')
+
+    def test_add_task_empty_description(self):
+        with self.assertRaises(ValueError):
+            task = self.task_manager.add_task('Test task', '')
