@@ -1,5 +1,7 @@
 # /tests/test_task_manager.py
 import unittest
+import os
+
 from task_manager.task_manager import TaskManager
 from task_manager.task import Task
 from task_manager.task import TaskStatus
@@ -10,6 +12,7 @@ class TestTaskManager(unittest.TestCase):
         self.task_manager = TaskManager(':memory:') # Use an in-memory storage for tests
         self.task_manager.storage.tasks = [] # clear existing tasks
         self.task_manager.tasks = [] # clear existing tasks
+        self.base_dir = '/usr/src/task-tracker-python'
 
     def test_add_task(self):
         task = self.task_manager.add_task('Test Task', 'Test Description')
@@ -44,6 +47,20 @@ class TestTaskManager(unittest.TestCase):
         tasks = self.task_manager.list_tasks(show_completed=False)
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0].title, 'Task 2')
+
+    def test_project_structure(self):
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'task_manager')))
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'tests')))
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'task_manager', '__init__.py')))
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'task_manager', 'task_manager.py')))
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'task_manager', 'task_storage.py')))
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'task_manager', 'task.py')))
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'tests', 'test_task_manager.py')))
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'main.py')))
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'README.md')))
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'setup.py')))
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, '.gitignore')))
+        self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'LICENSE')))
 
 if __name__ == '__main__':
     unittest.main()
