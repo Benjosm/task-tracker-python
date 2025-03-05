@@ -133,3 +133,35 @@ class TaskManager:
             "pending": pending,
             "priorities": priorities
         }
+
+    def edit_task(self, task_id, title=None, description=None, due_date=None, priority=None):
+        """Edit an existing task.
+
+        Args:
+            task_id (str): The ID of the task to edit.
+            title (str, optional): New title for the task. Defaults to None.
+            description (str, optional): New description for the task. Defaults to None.
+            due_date (str, optional): New due date for the task in YYYY-MM-DD format. Defaults to None.
+            priority (str, optional): New priority for the task (low, medium, high). Defaults to None.
+
+        Returns:
+            bool: True if the task was found and edited, False otherwise.
+        """
+        task = self.get_task_by_id(task_id)
+        if not task:
+            return False
+
+        if title is not None:
+            task.title = title
+        if description is not None:
+            task.description = description
+        if due_date is not None:
+            try:
+                task.due_date = datetime.datetime.strptime(due_date, "%Y-%m-%d").date()
+            except ValueError:
+                raise ValueError("Due date must be in the format YYYY-MM-DD")
+        if priority is not None:
+            task.priority = priority
+
+        self.storage.save_tasks(self.tasks)
+        return True
