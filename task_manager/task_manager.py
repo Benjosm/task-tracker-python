@@ -130,10 +130,12 @@ class TaskManager:
                 priorities[task.priority] += 1
         
         return {
-            "total": total,
-            "completed": completed,
-            "pending": pending,
-            "priorities": priorities
+            "total_tasks": total,
+            "completed_tasks": completed,
+            "pending_tasks": pending,
+            "high_priority_tasks": priorities["high"],
+            "medium_priority_tasks": priorities["medium"],
+            "low_priority_tasks": priorities["low"]
         }
 
     def edit_task(self, task_id, title=None, description=None, due_date=None, priority=None):
