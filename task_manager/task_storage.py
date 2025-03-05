@@ -1,3 +1,4 @@
+# task_manager/task_storage.py
 import json
 import os
 import traceback
@@ -17,6 +18,7 @@ class TaskStorage:
             print(f"Error saving tasks: {e}")
 
     def load_tasks(self):
+        print(f"Type of self.file_path in load_tasks: {type(self.file_path)}")
         if not os.path.exists(self.file_path):
             return []
         try:

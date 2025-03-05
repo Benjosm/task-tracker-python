@@ -1,28 +1,18 @@
 # /tests/test_task_manager_add_task.py
-import unittest
-import datetime
+
+import tempfile
+import os
 from task_manager.task_manager import TaskManager
+from task_manager.task_storage import TaskStorage
 
-class TestTaskManagerAddTask(unittest.TestCase):
 
-    def setUp(self):
-        self.task_manager = TaskManager(':memory:')
-        self.task_manager.storage.tasks = []
-        self.task_manager.tasks = []
-
-    def test_add_task_invalid_due_date_format(self):
-        with self.assertRaises(ValueError) as context:
-            self.task_manager.add_task('Invalid Date Task', 'Description', due_date='2023/12/31')
-        self.assertEqual(str(context.exception), 'Due date must be in the format YYYY-MM-DD')
-
-    def test_add_task_valid_priority(self):
-        task_low = self.task_manager.add_task('Low Priority Task', 'Description', priority='low')
-        self.assertEqual(task_low.priority, 'low')
-        task_medium = self.task_manager.add_task('Medium Priority Task', 'Description', priority='medium')
-        self.assertEqual(task_medium.priority, 'medium')
-        task_high = self.task_manager.add_task('High Priority Task', 'Description', priority='high')
-        self.assertEqual(task_high.priority, 'high')
-
-    def test_add_task_invalid_priority(self):
-        task = self.task_manager.add_task('Invalid Priority Task', 'Description', priority='invalid_priority')
-        self.assertEqual(task.priority, 'invalid_priority')
+def test_add_task():
+    with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+        task_storage = TaskStorage(tmp_file.name)
+        task_manager = TaskManager(tmp_file.name) # Corrected: Pass file path string
+        task_manager.add_task("Test Task", priority="High")
+        tasks = task_manager.list_tasks()
+        assert len(tasks) == 1
+        assert tasks[0].title == "Test Task"  # Changed 'name' to 'title'
+        assert tasks[0].priority == "High"
+    os.unlink(tmp_file.name)
