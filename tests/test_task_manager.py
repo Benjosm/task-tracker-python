@@ -104,6 +104,31 @@ class TestTaskManager(unittest.TestCase):
         self.assertIsInstance(task, Task)
         self.assertEqual(task.due_date, due_date)
 
+    def test_edit_task_title(self):
+        task = self.task_manager.add_task('Original Title', 'Description')
+        self.assertTrue(self.task_manager.edit_task(task.id, title='New Title'))
+        edited_task = self.task_manager.get_task_by_id(task.id)
+        self.assertEqual(edited_task.title, 'New Title')
+
+    def test_edit_task_description(self):
+        task = self.task_manager.add_task('Title', 'Original Description')
+        self.assertTrue(self.task_manager.edit_task(task.id, description='New Description'))
+        edited_task = self.task_manager.get_task_by_id(task.id)
+        self.assertEqual(edited_task.description, 'New Description')
+
+    def test_edit_task_due_date(self):
+        task = self.task_manager.add_task('Title', 'Description')
+        due_date_str = '2024-01-15'
+        due_date = datetime.datetime.strptime(due_date_str, '%Y-%m-%d').date()
+        self.assertTrue(self.task_manager.edit_task(task.id, due_date=due_date_str))
+        edited_task = self.task_manager.get_task_by_id(task.id)
+        self.assertEqual(edited_task.due_date, due_date)
+
+    def test_edit_task_priority(self):
+        task = self.task_manager.add_task('Title', 'Description')
+        self.assertTrue(self.task_manager.edit_task(task.id, priority='high'))
+        edited_task = self.task_manager.get_task_by_id(task.id)
+        self.assertEqual(edited_task.priority, 'high')
 
 if __name__ == '__main__':
     unittest.main()
