@@ -6,12 +6,18 @@ with properties like title, description, due date, etc.
 """
 import datetime
 import uuid
+from enum import Enum
+
+class TaskStatus(Enum):
+    PENDING = 'Pending'
+    IN_PROGRESS = 'In Progress'
+    COMPLETED = 'Completed'
 
 
 class Task:
     """Represents a single task in the task management system."""
 
-    def __init__(self, title, description="", due_date=None, priority="medium"):
+    def __init__(self, title, description="", due_date=None, priority="medium"): # Removed status for now
         """Initialize a new Task.
 
         Args:
@@ -26,7 +32,7 @@ class Task:
         self.due_date = due_date
         self.priority = priority
         self.created_date = datetime.date.today()
-        self.completed = False
+        self.status = TaskStatus.PENDING # Default status is PENDING
         self.completed_date = None
 
     def to_dict(self):
@@ -42,7 +48,7 @@ class Task:
             "due_date": self.due_date.isoformat() if self.due_date else None,
             "priority": self.priority,
             "created_date": self.created_date.isoformat(),
-            "completed": self.completed,
+            "status": self.status.value, # Store status value
             "completed_date": self.completed_date.isoformat() if self.completed_date else None
         }
 
@@ -68,7 +74,7 @@ class Task:
             task.due_date = datetime.date.fromisoformat(data["due_date"])
             
         task.created_date = datetime.date.fromisoformat(data["created_date"])
-        task.completed = data.get("completed", False)
+        task.status = TaskStatus(data.get("status", 'Pending')) # Load status from value, default to PENDING
         
         if data.get("completed_date"):
             task.completed_date = datetime.date.fromisoformat(data["completed_date"])
@@ -81,6 +87,5 @@ class Task:
         Returns:
             str: String representation
         """
-        status = "Completed" if self.completed else "Pending"
         due = f"Due: {self.due_date}" if self.due_date else "No due date"
-        return f"{self.title} ({status}) - {due} - Priority: {self.priority}"
+        return f"{self.title} ({self.status.value}) - {due} - Priority: {self.priority}" # Use status value
