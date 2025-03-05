@@ -77,5 +77,25 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(stats['priorities']['medium'], 1)
         self.assertEqual(stats['priorities']['low'], 2)
 
+    def test_delete_task(self):
+        task1 = self.task_manager.add_task('Task 1', 'Description 1')
+        task2 = self.task_manager.add_task('Task 2', 'Description 2')
+        self.assertTrue(self.task_manager.delete_task(task1.id))
+        self.assertFalse(self.task_manager.get_task_by_id(task1.id))
+        tasks = self.task_manager.list_tasks()
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0].title, 'Task 2')
+        self.assertFalse(self.task_manager.delete_task('non_existent_id'))
+
+    def test_get_task_by_id(self):
+        task1 = self.task_manager.add_task('Task 1', 'Description 1')
+        task2 = self.task_manager.add_task('Task 2', 'Description 2')
+        retrieved_task1 = self.task_manager.get_task_by_id(task1.id)
+        retrieved_task2 = self.task_manager.get_task_by_id(task2.id)
+        self.assertEqual(retrieved_task1.title, 'Task 1')
+        self.assertEqual(retrieved_task2.title, 'Task 2')
+        self.assertIsNone(self.task_manager.get_task_by_id('non_existent_id'))
+
+
 if __name__ == '__main__':
     unittest.main()
