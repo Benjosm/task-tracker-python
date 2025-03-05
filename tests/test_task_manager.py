@@ -130,5 +130,14 @@ class TestTaskManager(unittest.TestCase):
         edited_task = self.task_manager.get_task_by_id(task.id)
         self.assertEqual(edited_task.priority, 'high')
 
+    def test_complete_task(self):
+        task = self.task_manager.add_task('Complete Task Test', 'Description for complete task test')
+        self.assertEqual(task.status, TaskStatus.PENDING)
+        completion_result = self.task_manager.complete_task(task.id)
+        self.assertTrue(completion_result)
+        completed_task = self.task_manager.get_task_by_id(task.id)
+        self.assertEqual(completed_task.status, TaskStatus.COMPLETED)
+        self.assertIsNotNone(completed_task.completed_date)
+
 if __name__ == '__main__':
     unittest.main()
