@@ -35,6 +35,9 @@ class TaskManager:
         Returns:
             Task: The newly created task object
         """
+        if not title:
+            raise ValueError("Task title cannot be empty.")
+
         if due_date:
             try:
                 due_date = datetime.datetime.strptime(due_date, "%Y-%m-%d").date()
