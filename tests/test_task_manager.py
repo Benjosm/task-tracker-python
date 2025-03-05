@@ -62,5 +62,20 @@ class TestTaskManager(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(self.base_dir, '.gitignore')))
         self.assertTrue(os.path.exists(os.path.join(self.base_dir, 'LICENSE')))
 
+    def test_get_statistics(self):
+        self.task_manager.add_task('Task 1', 'Description 1', priority='high')
+        self.task_manager.add_task('Task 2', 'Description 2', priority='medium')
+        self.task_manager.add_task('Task 3', 'Description 3', priority='low')
+        task4 = self.task_manager.add_task('Task 4', 'Description 4', priority='low')
+        self.task_manager.complete_task(task4.id)
+
+        stats = self.task_manager.get_statistics()
+        self.assertEqual(stats['total'], 4)
+        self.assertEqual(stats['completed'], 1)
+        self.assertEqual(stats['pending'], 3)
+        self.assertEqual(stats['priorities']['high'], 1)
+        self.assertEqual(stats['priorities']['medium'], 1)
+        self.assertEqual(stats['priorities']['low'], 2)
+
 if __name__ == '__main__':
     unittest.main()
