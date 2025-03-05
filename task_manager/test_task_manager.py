@@ -124,3 +124,12 @@ class TestTaskManager(unittest.TestCase):
     def test_add_task_empty_description(self):
         with self.assertRaises(ValueError):
             task = self.task_manager.add_task('Test task', '')
+
+    def test_add_task_with_due_date(self):
+        due_date = datetime.date(2024, 1, 1)
+        task = self.task_manager.add_task('Task with due date', 'This is a test description with due date', due_date=due_date)
+        self.assertIsNotNone(task.id)
+        self.assertEqual(task.title, 'Task with due date')
+        self.assertEqual(task.description, 'This is a test description with due date')
+        self.assertEqual(task.due_date, due_date)
+        self.assertEqual(len(self.task_manager.tasks), 1)
