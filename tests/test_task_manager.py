@@ -22,6 +22,17 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(task.description, 'Test Description')
         self.assertEqual(task.status, TaskStatus.PENDING)
 
+    def test_add_task_all_parameters(self):
+        due_date_str = '2024-02-29'
+        priority = 'high'
+        task = self.task_manager.add_task('Task with all parameters', 'Description for task with all parameters', due_date=due_date_str, priority=priority)
+        self.assertIsInstance(task, Task)
+        self.assertEqual(task.title, 'Task with all parameters')
+        self.assertEqual(task.description, 'Description for task with all parameters')
+        self.assertEqual(task.due_date, datetime.datetime.strptime(due_date_str, '%Y-%m-%d').date())
+        self.assertEqual(task.priority, priority)
+        self.assertEqual(task.status, TaskStatus.PENDING)
+
     def test_list_tasks_empty(self):
         tasks = self.task_manager.list_tasks()
         self.assertEqual(len(tasks), 0)
