@@ -96,3 +96,11 @@ def test_get_statistics(task_manager): # Status is checked here through stats
     assert stats['priorities']['high'] == 1
     assert stats['priorities']['medium'] == 1
     assert stats['priorities']['low'] == 1
+
+
+def test_add_task_with_priority(task_manager):
+    task = task_manager.add_task(title='New Task', priority='high')
+    assert task is not None
+    assert task.title == 'New Task'
+    assert task.priority == 'high'
+    assert len(task_manager.list_tasks()) == 1
