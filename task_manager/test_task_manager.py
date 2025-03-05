@@ -1,6 +1,7 @@
 import unittest
 from task_manager.task_manager import TaskManager
 from task_manager.task import TaskStatus
+import datetime
 
 class TestTaskManager(unittest.TestCase):
 
@@ -105,6 +106,12 @@ class TestTaskManager(unittest.TestCase):
         task = self.task_manager.add_task('Original Title', 'Original Description', priority='low')
         updated_task = self.task_manager.edit_task(task.id, None, None, priority='high')
         self.assertEqual(updated_task.priority, 'high')
+
+    def test_edit_task_due_date(self):
+        task = self.task_manager.add_task('Original Title', 'Original Description')
+        due_date_str = '2024-12-31'
+        updated_task = self.task_manager.edit_task(task.id, None, None, due_date=due_date_str)
+        self.assertEqual(updated_task.due_date, datetime.datetime.strptime(due_date_str, '%Y-%m-%d').date())
 
 
 if __name__ == '__main__':
