@@ -1,29 +1,27 @@
-"""
-Setup script for the Task Manager package.
-"""
+# -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
-    name="task_manager",
+    name="task-tracker-python",
     version="0.1.0",
+    author="AI Software Dev",
+    author_email="",
+    description="Task Tracker Python project",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="",
     packages=find_packages(),
-    entry_points={
-        'console_scripts': [
-            'taskman=task_cli:main',
-        ],
-    },
-    author="Your Name",
-    author_email="your.email@example.com",
-    description="A simple command-line task management application",
-    keywords="task, todo, management",
-    url="https://github.com/yourusername/task-manager",
     classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Intended Audience :: End Users/Desktop",
-        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
     ],
-    python_requires=">=3.8",
+    python_requires='>=3.6',
+    install_requires=[
+        # Add your project dependencies here, e.g.,
+        # 'requests',
+    ],
 )
