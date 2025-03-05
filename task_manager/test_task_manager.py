@@ -11,5 +11,21 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(tasks[0]['title'], "Test Task")
         self.assertEqual(tasks[0]['description'], "Test Description")
 
+    def test_get_tasks(self):
+        task_manager = TaskManager()
+        task_manager.add_task("Task 1", "Description 1")
+        task_manager.add_task("Task 2", "Description 2")
+        tasks = task_manager.get_tasks()
+        self.assertEqual(len(tasks), 2)
+        self.assertEqual(tasks[0]['title'], "Task 1")
+        self.assertEqual(tasks[1]['title'], "Task 2")
+
+    def test_remove_task(self):
+        task_manager = TaskManager()
+        task_manager.add_task("Task to remove", "Description to remove")
+        task_manager.remove_task("Task to remove")
+        tasks = task_manager.get_tasks()
+        self.assertEqual(len(tasks), 0)
+
     def test_minimal(self):
         self.assertTrue(True)
