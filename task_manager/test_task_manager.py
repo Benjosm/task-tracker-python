@@ -109,3 +109,8 @@ def test_add_task_with_priority(task_manager):
 def test_add_task_with_empty_title(task_manager):
     task = task_manager.add_task(title='')
     assert task is None
+
+
+def test_add_task_with_space_only_title(task_manager):
+    task = task_manager.add_task(title='   ')
+    assert task is None
