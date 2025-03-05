@@ -21,3 +21,8 @@ class TestTaskManagerAddTask(unittest.TestCase):
     def test_add_task_default_priority(self):
         task = self.task_manager.add_task('Default Priority Task', 'Description')
         self.assertEqual(task.priority, 'medium')
+
+    def test_add_task_invalid_priority(self):
+        with self.assertRaises(ValueError) as context:
+            self.task_manager.add_task('Invalid Priority Task', 'Description', priority='invalid_priority')
+        self.assertEqual(str(context.exception), 'Priority must be one of: low, medium, high')
