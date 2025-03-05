@@ -6,6 +6,7 @@ class TestTaskManager(unittest.TestCase):
 
     def setUp(self):
         self.task_manager = TaskManager(':memory:') # Use in-memory storage for tests
+        self.task_manager.tasks = [] # Clear tasks before each test
 
     def test_add_task(self):
         task = self.task_manager.add_task('Test task', 'This is a test description')
