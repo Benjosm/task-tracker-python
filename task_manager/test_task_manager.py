@@ -104,3 +104,8 @@ def test_add_task_with_priority(task_manager):
     assert task.title == 'New Task'
     assert task.priority == 'high'
     assert len(task_manager.list_tasks()) == 1
+
+
+def test_add_task_with_empty_title(task_manager):
+    task = task_manager.add_task(title='')
+    assert task is None
