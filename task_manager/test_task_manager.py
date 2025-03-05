@@ -101,6 +101,11 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(updated_task.title, 'Updated Title')
         self.assertEqual(updated_task.description, 'Original Description')
 
+    def test_edit_task_priority(self):
+        task = self.task_manager.add_task('Original Title', 'Original Description', priority='low')
+        updated_task = self.task_manager.edit_task(task.id, None, None, priority='high')
+        self.assertEqual(updated_task.priority, 'high')
+
 
 if __name__ == '__main__':
     unittest.main()
