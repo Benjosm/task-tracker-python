@@ -93,3 +93,10 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(stats['high_priority_tasks'], 1)
         self.assertEqual(stats['medium_priority_tasks'], 1)
         self.assertEqual(stats['low_priority_tasks'], 1)
+
+    def test_edit_task_priority(self):
+        task = self.task_manager.add_task('Task to edit priority', 'Description', priority='low')
+        edited_task = self.task_manager.edit_task(task.id, priority='high')
+        self.assertTrue(edited_task)
+        task = self.task_manager.get_task_by_id(task.id)
+        self.assertEqual(task.priority, 'high')
