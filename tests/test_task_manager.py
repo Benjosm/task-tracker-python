@@ -1,6 +1,7 @@
 # /tests/test_task_manager.py
 import unittest
 import os
+import datetime
 
 from task_manager.task_manager import TaskManager
 from task_manager.task import Task
@@ -95,6 +96,13 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(retrieved_task1.title, 'Task 1')
         self.assertEqual(retrieved_task2.title, 'Task 2')
         self.assertIsNone(self.task_manager.get_task_by_id('non_existent_id'))
+
+    def test_add_task_with_due_date(self):
+        due_date_str = '2023-12-31'
+        due_date = datetime.datetime.strptime(due_date_str, '%Y-%m-%d').date()
+        task = self.task_manager.add_task('Task with Due Date', 'Description', due_date=due_date_str)
+        self.assertIsInstance(task, Task)
+        self.assertEqual(task.due_date, due_date)
 
 
 if __name__ == '__main__':
