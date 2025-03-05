@@ -46,3 +46,9 @@ class TestTaskManagerErrors(unittest.TestCase):
         self.assertTrue(self.task_manager.edit_task(task.id, priority='invalid_priority'))
         edited_task = self.task_manager.get_task_by_id(task.id)
         self.assertEqual(edited_task.priority, 'invalid_priority') # Should be handled in Task class or TaskManager
+
+    def test_edit_task_invalid_priority_value_error(self):
+        task = self.task_manager.add_task('Task to Edit Priority', 'Description')
+        with self.assertRaises(ValueError) as context:
+            self.task_manager.edit_task(task.id, priority='invalid-priority')
+        self.assertEqual(str(context.exception), "Invalid priority value: invalid-priority. Priority must be one of: low, medium, high.")
