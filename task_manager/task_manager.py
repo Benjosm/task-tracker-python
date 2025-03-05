@@ -1,3 +1,4 @@
+# task_manager/task_manager.py
 """
 Task Manager - A simple command-line task management application
 
@@ -7,8 +8,8 @@ on tasks such as adding, listing, and marking tasks as complete.
 import datetime
 import json
 import os
-from task import Task
-from task_storage import TaskStorage
+from task_manager.task import Task, TaskStatus
+from task_manager.task_storage import TaskStorage
 
 
 class TaskManager:
@@ -62,7 +63,7 @@ class TaskManager:
         """
         if show_completed:
             return self.tasks
-        return [task for task in self.tasks if not task.completed]
+        return [task for task in self.tasks if task.status != TaskStatus.COMPLETED]
 
     def complete_task(self, task_id):
         """Mark a task as completed.
@@ -75,7 +76,7 @@ class TaskManager:
         """
         for task in self.tasks:
             if task.id == task_id:
-                task.completed = True
+                task.status = TaskStatus.COMPLETED
                 task.completed_date = datetime.date.today()
                 self.storage.save_tasks(self.tasks)
                 return True
@@ -118,7 +119,7 @@ class TaskManager:
             dict: Dictionary with task statistics
         """
         total = len(self.tasks)
-        completed = sum(1 for task in self.tasks if task.completed)
+        completed = sum(1 for task in self.tasks if task.status == TaskStatus.COMPLETED)
         pending = total - completed
         
         priorities = {"low": 0, "medium": 0, "high": 0}
