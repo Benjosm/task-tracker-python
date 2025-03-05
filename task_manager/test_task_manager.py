@@ -80,3 +80,16 @@ class TestTaskManager(unittest.TestCase):
         task = self.task_manager.get_task_by_id(task.id)
         self.assertEqual(task.title, 'Edited title')
         self.assertEqual(task.description, 'Edited description')
+
+    def test_get_statistics(self):
+        task1 = self.task_manager.add_task('Task 1', 'Description 1', priority='high')
+        task2 = self.task_manager.add_task('Task 2', 'Description 2', priority='medium')
+        task3 = self.task_manager.add_task('Task 3', 'Description 3', priority='low')
+        self.task_manager.complete_task(task2.id)
+        stats = self.task_manager.get_statistics()
+        self.assertEqual(stats['total_tasks'], 3)
+        self.assertEqual(stats['completed_tasks'], 1)
+        self.assertEqual(stats['pending_tasks'], 2)
+        self.assertEqual(stats['high_priority_tasks'], 1)
+        self.assertEqual(stats['medium_priority_tasks'], 1)
+        self.assertEqual(stats['low_priority_tasks'], 1)
