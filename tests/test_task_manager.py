@@ -194,5 +194,17 @@ class TestTaskManager(unittest.TestCase):
         completed_task_again = self.task_manager.get_task_by_id(task.id)
         self.assertEqual(completed_task_again.status, TaskStatus.COMPLETED, "Task status should remain COMPLETED")
 
+    def test_clear_tasks(self):
+        # Add some tasks to be cleared
+        self.task_manager.add_task('Task 1', 'Description 1')
+        self.task_manager.add_task('Task 2', 'Description 2')
+        self.task_manager.clear_tasks()
+        # Verify that tasks list is empty
+        self.assertEqual(len(self.task_manager.tasks), 0, "Task list should be empty")
+        # Verify that storage is cleared (assuming storage is in memory for tests)
+        self.assertEqual(len(self.task_manager.storage.tasks), 0, "Storage should be empty")
+        # Verify that list_tasks returns an empty list
+        self.assertEqual(len(self.task_manager.list_tasks()), 0, "list_tasks should return empty list")
+
 if __name__ == '__main__':
     unittest.main()
