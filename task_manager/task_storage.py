@@ -34,6 +34,8 @@ class TaskStorage:
         try:
             with open(self.file_path, 'r') as file:
                 tasks_data = json.load(file)
+                print(f"Content of tasks file in load_tasks: {tasks_data}") # Debug print
             return [Task.from_dict(task_data) for task_data in tasks_data]
         except (FileNotFoundError, json.JSONDecodeError):
+            print(f"Tasks file not found or JSON invalid, returning empty list: {self.file_path}") # Debug print
             return []

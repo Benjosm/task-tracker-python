@@ -156,5 +156,10 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(completed_task.status, TaskStatus.COMPLETED)
         self.assertIsNotNone(completed_task.completed_date)
 
+    def test_complete_task_invalid_id(self):
+        invalid_task_id = 'invalid_id'
+        completion_result = self.task_manager.complete_task(invalid_task_id)
+        self.assertFalse(completion_result)
+
 if __name__ == '__main__':
     unittest.main()

@@ -55,6 +55,12 @@ class TestTaskCLI(unittest.TestCase):
         self.assertNotEqual(add_process.returncode, 0)
         self.assertIn('error:', add_process.stderr) # Expecting an error message in stderr
 
+    def test_cli_complete_non_existent_task(self):
+        # Try to complete a non-existent task
+        complete_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'complete', '999'], capture_output=True, text=True, check=False)
+        self.assertNotEqual(complete_process.returncode, 0)
+        self.assertIn('Error: Task with ID 999 not found.', complete_process.stderr)
+
 
 if __name__ == '__main__':
     unittest.main()
