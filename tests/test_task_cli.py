@@ -49,6 +49,12 @@ class TestTaskCLI(unittest.TestCase):
         list_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'list'], capture_output=True, text=True, check=True)
         self.assertIn('Test task with description (Pending) - No due date - Priority: medium', list_process.stdout)
 
+    def test_cli_add_task_without_description(self):
+        # Try to add a task without description
+        add_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'add', 'Test task without description'], capture_output=True, text=True, check=False)
+        self.assertNotEqual(add_process.returncode, 0)
+        self.assertIn('error:', add_process.stderr) # Expecting an error message in stderr
+
 
 if __name__ == '__main__':
     unittest.main()
