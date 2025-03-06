@@ -47,7 +47,7 @@ def list_tasks_command(args):
     Args:
         args: Command line arguments
     """
-    manager = TaskManager()
+    manager = TaskManager(task_file='/tmp/task_manager_tests/test_tasks.json')
     tasks = manager.list_tasks(show_completed=args.all)
     
     if not tasks:
@@ -65,7 +65,7 @@ def add_task_command(args):
     Args:
         args: Command line arguments
     """
-    manager = TaskManager()
+    manager = TaskManager(task_file='/tmp/task_manager_tests/test_tasks.json')
     try:
         task = manager.add_task(
             title=args.title,
@@ -84,7 +84,7 @@ def complete_task_command(args):
     Args:
         args: Command line arguments
     """
-    manager = TaskManager()
+    manager = TaskManager(task_file='/tmp/task_manager_tests/test_tasks.json')
     if manager.complete_task(args.id):
         print(f"Task {args.id} marked as completed")
     else:
@@ -97,7 +97,7 @@ def delete_task_command(args):
     Args:
         args: Command line arguments
     """
-    manager = TaskManager()
+    manager = TaskManager(task_file='/tmp/task_manager_tests/test_tasks.json')
     if manager.delete_task(args.id):
         print(f"Task {args.id} deleted")
     else:
@@ -110,7 +110,7 @@ def view_task_command(args):
     Args:
         args: Command line arguments
     """
-    manager = TaskManager()
+    manager = TaskManager(task_file='/tmp/task_manager_tests/test_tasks.json')
     task = manager.get_task_by_id(args.id)
     if task:
         print(format_task_output(task, verbose=True))
@@ -124,7 +124,7 @@ def stats_command(args):
     Args:
         args: Command line arguments
     """
-    manager = TaskManager()
+    manager = TaskManager(task_file='/tmp/task_manager_tests/test_tasks.json')
     stats = manager.get_statistics()
     
     print("Task Statistics:")

@@ -40,6 +40,10 @@ class TaskManager:
         Returns:
             Task: The newly created task object
         """
+        if not title:
+            raise ValueError("Task title cannot be empty.")
+        if len(title) > 100:
+            raise ValueError("Task title is too long. Maximum length is 100 characters.")
         if priority not in ["low", "medium", "high"]:
             raise ValueError("Priority must be one of 'low', 'medium', 'high'")
         if due_date:
@@ -154,18 +158,20 @@ class TaskManager:
             bool: True if the task was found and edited, False otherwise
         """
         task = self.get_task_by_id(task_id)
-        if task:
-            if title is not None:
-                task.title = title
-            if description is not None:
-                task.description = description
-            if due_date is not None:
-                try:
-                    task.due_date = datetime.datetime.strptime(due_date, "%Y-%m-%d").date() if due_date else None
-                except ValueError:
-                    raise ValueError("Due date must be in the format YYYY-MM-DD")
-            if priority is not None:
-                task.priority = priority
-            self.storage.save_tasks(self.tasks)
-            return True
-        return False
+        if not task:
+            raise ValueError(f"Task with ID '{task_id}' not found.")
+        if title is not None:
+            if not title:
+                raise ValueError("Task title cannot be empty.")
+            task.title = title
+        if description is not None:
+            task.description = description
+        if due_date is not None:
+            try:
+                task.due_date = datetime.datetime.strptime(due_date, "%Y-%m-%d").date() if due_date else None
+            except ValueError:
+                raise ValueError("Due date must be in the format YYYY-MM-DD")
+        if priority is not None:
+            task.priority = priority
+        self.storage.save_tasks(self.tasks)
+        return True
