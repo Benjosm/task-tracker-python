@@ -4,6 +4,7 @@ import unittest
 from task_manager.task import Task, TaskStatus
 import datetime
 import uuid
+import inspect
 
 class TestTask(unittest.TestCase):
 
@@ -106,6 +107,49 @@ class TestTask(unittest.TestCase):
         }
         with self.assertRaises(KeyError):
             Task.from_dict(task_dict)
+
+class TestTaskDocumentation(unittest.TestCase):
+
+    def test_task_class_docstring(self):
+        self.assertIsNotNone(Task.__doc__, "Task class should have a docstring")
+        self.assertGreater(len(Task.__doc__), 0, "Task class docstring should not be empty")
+
+    def test_task_init_docstring(self):
+        self.assertIsNotNone(Task.__init__.__doc__, "Task.__init__ should have a docstring")
+        self.assertGreater(len(Task.__init__.__doc__), 0, "Task.__init__ docstring should not be empty")
+        
+    def test_task_to_dict_docstring(self):
+        self.assertIsNotNone(Task.to_dict.__doc__, "Task.to_dict should have a docstring")
+        self.assertGreater(len(Task.to_dict.__doc__), 0, "Task.to_dict docstring should not be empty")
+
+    def test_task_from_dict_docstring(self):
+        self.assertIsNotNone(Task.from_dict.__doc__, "Task.from_dict should have a docstring")
+        self.assertGreater(len(Task.from_dict.__doc__), 0, "Task.from_dict docstring should not be empty")
+
+    def test_task_str_docstring(self):
+        self.assertIsNotNone(Task.__str__.__doc__, "Task.__str__ should have a docstring")
+        self.assertGreater(len(Task.__str__.__doc__), 0, "Task.__str__ docstring should not be empty")
+
+    def test_task_init_type_hints(self):
+        signature = inspect.signature(Task.__init__)
+        self.assertTrue(signature.parameters['title'].annotation != inspect.Parameter.empty, "Task.__init__ should have type hint for title")
+        self.assertTrue(signature.parameters['description'].annotation != inspect.Parameter.empty, "Task.__init__ should have type hint for description")
+        self.assertTrue(signature.parameters['due_date'].annotation != inspect.Parameter.empty, "Task.__init__ should have type hint for due_date")
+        self.assertTrue(signature.parameters['priority'].annotation != inspect.Parameter.empty, "Task.__init__ should have type hint for priority")
+        self.assertTrue(signature.parameters['status'].annotation != inspect.Parameter.empty, "Task.__init__ should have type hint for status")
+
+    def test_task_to_dict_type_hints(self):
+        signature = inspect.signature(Task.to_dict)
+        self.assertTrue(signature.return_annotation != inspect.Signature.empty, "Task.to_dict should have return type hint")
+
+    def test_task_from_dict_type_hints(self):
+        signature = inspect.signature(Task.from_dict)
+        self.assertTrue(signature.parameters['data'].annotation != inspect.Parameter.empty, "Task.from_dict should have type hint for data")
+        self.assertTrue(signature.return_annotation != inspect.Signature.empty, "Task.from_dict should have return type hint")
+
+    def test_task_str_type_hints(self):
+        signature = inspect.signature(Task.__str__)
+        self.assertTrue(signature.return_annotation != inspect.Signature.empty, "Task.__str__ should have return type hint")
 
 if __name__ == '__main__':
     unittest.main()
