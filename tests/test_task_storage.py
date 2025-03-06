@@ -90,3 +90,14 @@ class TestTaskStorage(unittest.TestCase):
 
         # Assert that it returns an empty list or handles it appropriately
         self.assertEqual(tasks, [])
+
+    def test_load_tasks_invalid_json(self):
+        # Create a test file with invalid JSON format
+        with open(self.test_file, 'w') as f:
+            f.write('{\"invalid_json\": syntax error')
+
+        # Load tasks, should handle invalid JSON and return empty list
+        tasks = self.task_storage.load_tasks()
+
+        # Assert that it returns an empty list
+        self.assertEqual(tasks, [])
