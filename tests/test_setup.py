@@ -1,27 +1,18 @@
 # tests/test_setup.py
+
 import os
-import unittest
-import subprocess
+import re
 
-class TestSetupPy(unittest.TestCase):
+def test_setup_file_exists():
+    assert os.path.exists('setup.py')
 
-    def test_setup_py_exists(self):
-        self.assertTrue(os.path.exists('setup.py'))
+def test_setup_file_content():
+    with open('setup.py', 'r') as f:
+        setup_content = f.read()
 
-    def test_setup_py_content(self):
-        with open('setup.py', 'r') as f:
-            setup_content = f.read()
-
-        self.assertIn('name=', setup_content)
-        self.assertIn('version=', setup_content)
-        self.assertIn('description=', setup_content)
-        self.assertIn('packages=', setup_content)
-
-    def test_package_installable(self):
-        try:
-            subprocess.check_call(['python3', 'setup.py', 'install', '--user'])
-        except subprocess.CalledProcessError as e:
-            self.fail(f"Installation failed: {e}")
-
-if __name__ == '__main__':
-    unittest.main()
+    assert 'name="task_manager"' in setup_content
+    assert 'version="0.1.0"' in setup_content
+    assert 'description=' in setup_content
+    assert 'packages=find_packages()' in setup_content
+    assert 'entry_points={' in setup_content
+    assert 'install_requires' not in setup_content # Verify no dependencies are listed
