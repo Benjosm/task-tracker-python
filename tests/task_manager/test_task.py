@@ -94,5 +94,18 @@ class TestTask(unittest.TestCase):
         task = Task("Invalid Priority Task", priority="invalid")
         self.assertEqual(task.priority, "invalid") # It should accept invalid priority, no validation
 
+    def test_task_from_dict_missing_title(self):
+        task_dict = {
+            'id': str(uuid.uuid4()),
+            'description': 'Creating task from dict',
+            'due_date': '2024-03-10',
+            'priority': 'high',
+            'status': 'In Progress',
+            'created_date': datetime.date(2024, 1, 1).isoformat(),
+            'completed_date': None
+        }
+        with self.assertRaises(KeyError):
+            Task.from_dict(task_dict)
+
 if __name__ == '__main__':
     unittest.main()
