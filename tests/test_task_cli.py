@@ -105,6 +105,28 @@ class TestTaskCLI(unittest.TestCase):
         self.assertNotEqual(view_process.returncode, 0)
         self.assertIn(f'Error viewing task {task_id}: Task not found.', view_process.stderr)
 
+    def test_cli_stats_command_with_tasks(self):
+        # Add a few tasks
+        add_process1 = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'add', 'Task 1 for stats', '-d', 'Description 1'], capture_output=True, text=True, check=True)
+        self.assertIn('Task added successfully.', add_process1.stdout)
+        add_process2 = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'add', 'Task 2 for stats', '-d', 'Description 2'], capture_output=True, text=True, check=True)
+        self.assertIn('Task added successfully.', add_process2.stdout)
+
+        # Run stats command
+        stats_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'stats'], capture_output=True, text=True, check=False)
+        print(f"Stats command STDOUT: \"{stats_process.stdout}\"")
+        print(f"Stats command STDERR: \"{stats_process.stderr}\"")
+        self.assertNotEqual(stats_process.returncode, 0)
+        self.assertIn('Unknown command', stats_process.stderr) # Expecting an error message in stderr
+
+    def test_cli_stats_command_no_tasks(self):
+        # Run stats command when no tasks exist
+        stats_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'stats'], capture_output=True, text=True, check=False)
+        print(f"Stats command STDOUT (no tasks): \"{stats_process.stdout}\"")
+        print(f"Stats command STDERR (no tasks): \"{stats_process.stderr}\"")
+        self.assertNotEqual(stats_process.returncode, 0)
+        self.assertIn('Unknown command', stats_process.stderr) # Expecting an error message in stderr
+
 
 if __name__ == '__main__':
     unittest.main()
