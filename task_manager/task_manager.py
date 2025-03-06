@@ -1,14 +1,10 @@
-"""
-Task Manager - A simple command-line task management application
+# task_manager/task_manager.py
 
-This module contains the main TaskManager class that handles operations
-on tasks such as adding, listing, and marking tasks as complete.
-"""
 import datetime
 import json
 import os
-from .task import Task, TaskStatus
-from .task_storage import TaskStorage
+from task_manager.task import Task, TaskStatus
+from task_manager.task_storage import TaskStorage
 
 
 class TaskManager:

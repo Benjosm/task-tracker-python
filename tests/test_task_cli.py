@@ -4,6 +4,7 @@ import subprocess
 import unittest
 import os
 import re
+import uuid
 
 class TestTaskCLI(unittest.TestCase):
 
@@ -78,14 +79,21 @@ class TestTaskCLI(unittest.TestCase):
         self.assertIsNotNone(task_id_match, "Task ID not found in add task output")
         task_id = task_id_match.group(1)
 
-        # Try to Delete the task (expecting failure)
-        delete_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'delete', task_id], capture_output=True, text=True, check=False) # check=False because we expect it to fail
-        self.assertNotEqual(delete_process.returncode, 0)
-        self.assertIn("invalid choice: 'delete'", delete_process.stderr) # Assert error message
+        # Delete the task
+        delete_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'delete', task_id], capture_output=True, text=True, check=True)
+        self.assertEqual(delete_process.returncode, 0)
+        self.assertIn(f'Task {task_id} deleted successfully.', delete_process.stdout)
 
-        # List tasks and verify the task is *still* present (not deleted)
+        # List tasks and verify the task is deleted
         list_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'list'], capture_output=True, text=True, check=True)
-        self.assertIn('Task to delete', list_process.stdout) # Assert task is still there
+        self.assertNotIn('Task to delete', list_process.stdout)
+
+    def test_cli_delete_non_existent_task(self):
+        # Try to delete a non-existent task
+        task_id = str(uuid.uuid4())
+        delete_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'delete', task_id], capture_output=True, text=True, check=False)
+        self.assertNotEqual(delete_process.returncode, 0)
+        self.assertIn(f'Error deleting task {task_id}: Task not found.', delete_process.stderr)
 
 
 if __name__ == '__main__':
