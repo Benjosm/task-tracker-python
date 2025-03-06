@@ -3,6 +3,7 @@
 import subprocess
 import unittest
 import os
+import re
 
 class TestTaskCLI(unittest.TestCase):
 
@@ -25,7 +26,7 @@ class TestTaskCLI(unittest.TestCase):
 
     def test_cli_list_tasks_when_tasks_exist(self):
         # Add a task
-        add_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'add', 'Test task'], capture_output=True, text=True, check=True)
+        add_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'add', 'Test task', '-d', 'Test description for list tasks test'], capture_output=True, text=True, check=True)
         self.assertIn('Task added successfully.', add_process.stdout)
 
         # List tasks
@@ -52,8 +53,39 @@ class TestTaskCLI(unittest.TestCase):
     def test_cli_add_task_without_description(self):
         # Try to add a task without description
         add_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'add', 'Test task without description'], capture_output=True, text=True, check=False)
+        print(f"add_process.stdout: {add_process.stdout}") # ADD THIS
+        print(f"add_process.stderr: {add_process.stderr}") # ADD THIS
+        print(f"add_process.returncode: {add_process.returncode}") # ADD THIS
         self.assertNotEqual(add_process.returncode, 0)
-        self.assertIn('error:', add_process.stderr) # Expecting an error message in stderr
+        self.assertIn('Error: Description is required', add_process.stderr) # Expecting an error message in stderr
+
+    def test_cli_complete_non_existent_task(self):
+        # Try to complete a non-existent task
+        complete_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'complete', '999'], capture_output=True, text=True, check=False)
+        print(f"complete_process.stdout: {complete_process.stdout}") # ADD THIS
+        print(f"complete_process.stderr: {complete_process.stderr}") # ADD THIS
+        print(f"complete_process.returncode: {complete_process.returncode}") # ADD THIS
+        self.assertNotEqual(complete_process.returncode, 0)
+        self.assertIn('Error completing task 999', complete_process.stderr)
+
+    def test_cli_delete_existing_task(self):
+        # Add a task to be deleted
+        add_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'add', 'Task to delete', '-d', 'Description for delete test'], capture_output=True, text=True, check=True)
+        self.assertIn('Task added successfully.', add_process.stdout)
+
+        # Extract task ID
+        task_id_match = re.search(r'Task ID: ([0-9a-fA-F-]+)', add_process.stdout)
+        self.assertIsNotNone(task_id_match, "Task ID not found in add task output")
+        task_id = task_id_match.group(1)
+
+        # Try to Delete the task (expecting failure)
+        delete_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'delete', task_id], capture_output=True, text=True, check=False) # check=False because we expect it to fail
+        self.assertNotEqual(delete_process.returncode, 0)
+        self.assertIn("invalid choice: 'delete'", delete_process.stderr) # Assert error message
+
+        # List tasks and verify the task is *still* present (not deleted)
+        list_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'list'], capture_output=True, text=True, check=True)
+        self.assertIn('Task to delete', list_process.stdout) # Assert task is still there
 
 
 if __name__ == '__main__':
