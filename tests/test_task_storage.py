@@ -79,3 +79,14 @@ class TestTaskStorage(unittest.TestCase):
         self.assertEqual(loaded_tasks_data[1]['description'], "Description 2")
         self.assertEqual(loaded_tasks_data[1]['due_date'], '2024-01-01')
         self.assertEqual(loaded_tasks_data[1]['status'], 'Completed') # Assert status is 'Completed' for Task 2
+
+    def test_load_tasks_file_not_found(self):
+        # Ensure the test file does not exist
+        if os.path.exists(self.test_file):
+            os.remove(self.test_file)
+
+        # Load tasks, should handle file not found
+        tasks = self.task_storage.load_tasks()
+
+        # Assert that it returns an empty list or handles it appropriately
+        self.assertEqual(tasks, [])
