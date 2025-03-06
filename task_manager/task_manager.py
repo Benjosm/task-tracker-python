@@ -40,6 +40,8 @@ class TaskManager:
         Returns:
             Task: The newly created task object
         """
+        if priority not in ["low", "medium", "high"]:
+            raise ValueError("Priority must be one of 'low', 'medium', 'high'")
         if due_date:
             try:
                 due_date = datetime.datetime.strptime(due_date, "%Y-%m-%d").date()
