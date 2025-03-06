@@ -184,5 +184,15 @@ class TestTaskManager(unittest.TestCase):
             self.task_manager.edit_task(task.id, priority='invalid')
         self.assertEqual(str(context.exception), "Priority must be one of 'low', 'medium', 'high'")
 
+    def test_complete_already_completed_task(self):
+        task = self.task_manager.add_task('Complete Task Test', 'Description for complete task test')
+        self.task_manager.complete_task(task.id)
+        completed_task = self.task_manager.get_task_by_id(task.id)
+        self.assertEqual(completed_task.status, TaskStatus.COMPLETED)
+        completion_result = self.task_manager.complete_task(task.id)
+        self.assertFalse(completion_result, "Completing an already completed task should return False")
+        completed_task_again = self.task_manager.get_task_by_id(task.id)
+        self.assertEqual(completed_task_again.status, TaskStatus.COMPLETED, "Task status should remain COMPLETED")
+
 if __name__ == '__main__':
     unittest.main()
