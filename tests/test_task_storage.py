@@ -94,10 +94,33 @@ class TestTaskStorage(unittest.TestCase):
     def test_load_tasks_invalid_json(self):
         # Create a test file with invalid JSON format
         with open(self.test_file, 'w') as f:
-            f.write('{\"invalid_json\": syntax error')
+            f.write('{\\"invalid_json\\\": syntax error')
 
         # Load tasks, should handle invalid JSON and return empty list
         tasks = self.task_storage.load_tasks()
 
         # Assert that it returns an empty list
         self.assertEqual(tasks, [])
+
+    def test_task_storage_data_integrity(self):
+        # Create a list of tasks
+        tasks_original = [
+            Task("Task 1", "Description 1", datetime.date(2024, 1, 1), 'high', TaskStatus.PENDING),
+            Task("Task 2", "Description 2", datetime.date(2024, 1, 2), 'medium', TaskStatus.IN_PROGRESS),
+            Task("Task 3", "Description 3", datetime.date(2024, 1, 3), 'low', TaskStatus.COMPLETED)
+        ]
+
+        # Save tasks
+        self.task_storage.save_tasks(tasks_original)
+
+        # Load tasks
+        tasks_loaded = self.task_storage.load_tasks()
+
+        # Assert that the loaded tasks are identical to the original tasks
+        self.assertEqual(len(tasks_loaded), len(tasks_original))
+        for i in range(len(tasks_original)):
+            self.assertEqual(tasks_loaded[i].id, tasks_original[i].id)
+            self.assertEqual(tasks_loaded[i].title, tasks_original[i].title)
+            self.assertEqual(tasks_loaded[i].description, tasks_original[i].description)
+            self.assertEqual(tasks_loaded[i].due_date, tasks_original[i].due_date)
+            self.assertEqual(tasks_loaded[i].status, tasks_original[i].status)
