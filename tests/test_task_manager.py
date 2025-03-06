@@ -161,5 +161,28 @@ class TestTaskManager(unittest.TestCase):
         completion_result = self.task_manager.complete_task(invalid_task_id)
         self.assertFalse(completion_result)
 
+    def test_edit_task_non_existent_task(self):
+        with self.assertRaises(ValueError) as context:
+            self.task_manager.edit_task('non_existent_task_id', title='New Title')
+        self.assertEqual(str(context.exception), "Task with ID 'non_existent_task_id' not found.")
+
+    def test_edit_task_empty_title(self):
+        task = self.task_manager.add_task('Original Title', 'Description')
+        with self.assertRaises(ValueError) as context:
+            self.task_manager.edit_task(task.id, title='')
+        self.assertEqual(str(context.exception), "Task title cannot be empty.")
+
+    def test_edit_task_invalid_due_date_format(self):
+        task = self.task_manager.add_task('Original Title', 'Description')
+        with self.assertRaises(ValueError) as context:
+            self.task_manager.edit_task(task.id, due_date='2024-01-15-invalid')
+        self.assertEqual(str(context.exception), "Due date must be in the format YYYY-MM-DD")
+
+    def test_edit_task_invalid_priority_value(self):
+        task = self.task_manager.add_task('Original Title', 'Description')
+        with self.assertRaises(ValueError) as context:
+            self.task_manager.edit_task(task.id, priority='invalid')
+        self.assertEqual(str(context.exception), "Priority must be one of 'low', 'medium', 'high'")
+
 if __name__ == '__main__':
     unittest.main()
