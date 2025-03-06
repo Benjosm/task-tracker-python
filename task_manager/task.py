@@ -45,11 +45,12 @@ class Task:
         Returns:
             dict: Dictionary representation of the task
         """
+        print(f'DEBUG to_dict: self.due_date = {self.due_date}, type(self.due_date) = {type(self.due_date)}')
         return {
             "id": self.id,
             "title": self.title,
             "description": self.description,
-            "due_date": self.due_date.isoformat() if self.due_date else None,
+            "due_date": self.due_date.isoformat() if isinstance(self.due_date, datetime.date) else None,
             "priority": str(self.priority.value) if isinstance(self.priority, TaskStatus) else str(self.priority) if isinstance(self.priority, Enum) else self.priority,
             "created_date": self.created_date.isoformat(),
             "status": str(self.status.value),
@@ -66,6 +67,7 @@ class Task:
         Returns:
             Task: A new Task object
         """
+        print(f'DEBUG from_dict: data = {data}')
         task = cls(
             title=data['title'],
             description=data.get("description", ""),
