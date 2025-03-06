@@ -95,6 +95,16 @@ class TestTaskCLI(unittest.TestCase):
         self.assertNotEqual(delete_process.returncode, 0)
         self.assertIn(f'Error deleting task {task_id}: Task not found.', delete_process.stderr)
 
+    def test_cli_view_non_existent_task(self):
+        # Try to view a non-existent task
+        task_id = '999' # Use a task ID that is unlikely to exist
+        view_process = subprocess.run(['python3', '-m', 'task_manager.task_cli', 'view', task_id], capture_output=True, text=True, check=False)
+        print(f"view_process.stdout: {view_process.stdout}")
+        print(f"view_process.stderr: {view_process.stderr}")
+        print(f"view_process.returncode: {view_process.returncode}")
+        self.assertNotEqual(view_process.returncode, 0)
+        self.assertIn(f'Error viewing task {task_id}: Task not found.', view_process.stderr)
+
 
 if __name__ == '__main__':
     unittest.main()
