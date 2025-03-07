@@ -105,8 +105,9 @@ class TestTask(unittest.TestCase):
             'created_date': datetime.date(2024, 1, 1).isoformat(),
             'completed_date': None
         }
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ValueError) as context:
             Task.from_dict(task_dict)
+        self.assertIn("title", str(context.exception).lower())
 
 class TestTaskDocumentation(unittest.TestCase):
 
