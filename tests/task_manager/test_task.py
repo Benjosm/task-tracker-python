@@ -153,6 +153,21 @@ class TestTask(unittest.TestCase):
         self.assertIn("created_date", str(context.exception).lower())
         self.assertIn("missing created date", str(context.exception).lower())
 
+    def test_task_from_dict_missing_status(self):
+        task_dict = {
+            'id': str(uuid.uuid4()),
+            'title': 'Missing Status Task',
+            'description': 'Creating task from dict without status',
+            'due_date': '2024-03-15',
+            'priority': 'medium',
+            'created_date': datetime.date(2024, 1, 5).isoformat(),
+            'completed_date': None
+        }
+        with self.assertRaises(ValueError) as context:
+            Task.from_dict(task_dict)
+        self.assertIn("status", str(context.exception).lower())
+        self.assertIn("missing status", str(context.exception).lower())
+
 class TestTaskDocumentation(unittest.TestCase):
 
     def test_task_class_docstring(self):
