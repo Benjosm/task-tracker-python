@@ -109,6 +109,20 @@ class TestTask(unittest.TestCase):
             Task.from_dict(task_dict)
         self.assertIn("title", str(context.exception).lower())
 
+    def test_task_from_dict_missing_id(self):
+        task_dict = {
+            'title': 'Missing ID Task',
+            'description': 'Creating task from dict without id',
+            'due_date': '2024-03-15',
+            'priority': 'medium',
+            'status': 'Pending',
+            'created_date': datetime.date(2024, 1, 5).isoformat(),
+            'completed_date': None
+        }
+        with self.assertRaises(ValueError) as context:
+            Task.from_dict(task_dict)
+        self.assertIn("id", str(context.exception).lower())
+
 class TestTaskDocumentation(unittest.TestCase):
 
     def test_task_class_docstring(self):
