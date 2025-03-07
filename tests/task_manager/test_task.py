@@ -196,6 +196,19 @@ class TestTask(unittest.TestCase):
         task = Task.from_dict(task_dict)
         self.assertEqual(task.priority, 'medium')
 
+    def test_task_from_dict_missing_due_date(self):
+        task_dict = {
+            'id': str(uuid.uuid4()),
+            'title': 'Missing Due Date Task',
+            'description': 'Creating task from dict without due_date',
+            'priority': 'medium',
+            'status': 'Pending',
+            'created_date': datetime.date(2024, 1, 5).isoformat(),
+            'completed_date': None
+        }
+        task = Task.from_dict(task_dict)
+        self.assertIsNone(task.due_date)
+
 class TestTaskDocumentation(unittest.TestCase):
 
     def test_task_class_docstring(self):
