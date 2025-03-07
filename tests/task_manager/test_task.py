@@ -183,6 +183,19 @@ class TestTask(unittest.TestCase):
         self.assertIn("priority", str(context.exception).lower())
         self.assertIn("missing priority", str(context.exception).lower())
 
+    def test_task_from_dict_default_priority(self):
+        task_dict = {
+            'id': str(uuid.uuid4()),
+            'title': 'Default Priority Task',
+            'description': 'Creating task from dict without priority key',
+            'due_date': '2024-03-15',
+            'status': 'Pending',
+            'created_date': datetime.date(2024, 1, 5).isoformat(),
+            'completed_date': None
+        }
+        task = Task.from_dict(task_dict)
+        self.assertEqual(task.priority, 'medium')
+
 class TestTaskDocumentation(unittest.TestCase):
 
     def test_task_class_docstring(self):
